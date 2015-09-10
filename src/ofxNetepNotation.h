@@ -1,12 +1,22 @@
 #include "ofMain.h"
+#include "ofxFontStash.h"
+
+#ifndef uint
+#define uint unsigned int
+#endif
+
 
 struct scoreEvent {
     float time;
 };
 
+enum noteAnnotations {STACCATO, ACCENT};
+enum accidentals {FLAT, SHARP, DOUBLEFLAT, DOUBLESHARP};
+
 struct note : public scoreEvent {
     float length;
-    bool accented;
+    vector<noteAnnotations> annotations;
+    accidentals accidental;
 };
 
 struct rest : public scoreEvent {
@@ -19,13 +29,24 @@ struct annotationSymbol : public scoreEvent {
     int type;
 };
 
+struct slur : public annotationSymbol {
+    note *start, *end;
+};
+
+
 struct annotationText : public scoreEvent {
     string text;
 };
 
+enum clefs {TREBLE, BASS, ALTO, TENOR};
+
 struct bar {
     vector<scoreEvent> events;
     int key;
+    //time sig
+    unsigned int timeNumerator, timeDenominator;
+    clefs clef;
+    
 };
 
 struct score {
@@ -43,4 +64,8 @@ public:
     void render();
     
     score scr;
+    
+    ofxFontStash font;
+    ofxFontStash unicodeFont;
+
 };
